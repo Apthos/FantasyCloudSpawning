@@ -6,8 +6,14 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Fcspawning extends JavaPlugin implements Listener {
 
@@ -17,7 +23,7 @@ public final class Fcspawning extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onSpawn(EntitySpawnEvent e) {
+    public void onSpawn(CreatureSpawnEvent e) {
 
         Entity entity = e.getEntity();
 
@@ -36,7 +42,8 @@ public final class Fcspawning extends JavaPlugin implements Listener {
                 entity.getType() == EntityType.SPIDER || entity.getType() == EntityType.SQUID ||
                 entity.getType() == EntityType.VILLAGER || entity.getType() == EntityType.WITCH ||
                 entity.getType() == EntityType.WOLF || entity.getType() == EntityType.WITHER ||
-                entity.getType() == EntityType.ZOMBIE) {
+                entity.getType() == EntityType.ZOMBIE || e.getSpawnReason().equals(
+                        CreatureSpawnEvent.SpawnReason.EGG ) )  {
 
             boolean found = false;
 
@@ -61,10 +68,5 @@ public final class Fcspawning extends JavaPlugin implements Listener {
         }
         return;
     }
-
-    public void CB(EntityType e) {
-
-    }
-
 
 }
