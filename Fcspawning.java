@@ -2,18 +2,15 @@ package net.apthos.fcspawning;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.craftbukkit.v1_9_R1.block.CraftCreatureSpawner;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class Fcspawning extends JavaPlugin implements Listener {
 
@@ -26,6 +23,10 @@ public final class Fcspawning extends JavaPlugin implements Listener {
     public void onSpawn(CreatureSpawnEvent e) {
 
         Entity entity = e.getEntity();
+        boolean found = false;
+        if (e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG)) {
+            found = true;
+        }
 
         if (entity.getType() == EntityType.BAT || entity.getType() == EntityType.BLAZE ||
                 entity.getType() == EntityType.CAVE_SPIDER || entity.getType() == EntityType.CHICKEN ||
@@ -42,10 +43,7 @@ public final class Fcspawning extends JavaPlugin implements Listener {
                 entity.getType() == EntityType.SPIDER || entity.getType() == EntityType.SQUID ||
                 entity.getType() == EntityType.VILLAGER || entity.getType() == EntityType.WITCH ||
                 entity.getType() == EntityType.WOLF || entity.getType() == EntityType.WITHER ||
-                entity.getType() == EntityType.ZOMBIE || e.getSpawnReason().equals(
-                        CreatureSpawnEvent.SpawnReason.EGG ) )  {
-
-            boolean found = false;
+                entity.getType() == EntityType.ZOMBIE) {
 
             Location L = entity.getLocation();
             Location Min = L.clone().subtract(9, 9, 9);
@@ -54,18 +52,21 @@ public final class Fcspawning extends JavaPlugin implements Listener {
                 for (int x = 0; x < 18; x++) {
                     for (int z = 0; z < 18; z++) {
                         if (Min.clone().add(x, y, z).getBlock().getType().equals(Material.MOB_SPAWNER)) {
-                            found = true;
+                            CraftCreatureSpawner Spawner = new CraftCreatureSpawner( Min.clone().add(x, y, z).getBlock() );
+                            if( Spawner.getSpawnedType().equals( entity.getType() ) ){
+                                found = true;
+                            }
                         }
                     }// end of z
                 }// end of x
             }// end of y
+        }
 
             if (!found) {
                 e.setCancelled(true);
                 entity.remove();
             }
 
-        }
         return;
     }
 
